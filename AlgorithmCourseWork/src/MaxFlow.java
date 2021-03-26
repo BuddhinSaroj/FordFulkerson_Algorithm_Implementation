@@ -1,12 +1,11 @@
 // Java program for implementation of Ford Fulkerson algorithm
-import java.io.*;
 import java.lang.*;
-import java.util.*;
+import java.util.Arrays;
 import java.util.LinkedList;
 
 class MaxFlow {
     static int V ; // Number of vertices in graph
-    static int data[][];
+    static int data[][];//2d array
 
     /* Returns true if there is a path from source 's' to
     sink 't' in residual graph. Also fills parent[] to
@@ -114,13 +113,22 @@ class MaxFlow {
 
         MaxFlow maxFlow = new MaxFlow();
         FileReading fileReading = new FileReading();
-
+        Stopwatch stopwatch = new Stopwatch();
+        int maxFlowAvg = 0;
+        float stopwatchAvg[]=new float[3];
         fileReading.readFiles();
 
-        Stopwatch stopwatch = new Stopwatch();
+        for(int i = 0 ; i<3 ; i++){
+            maxFlowAvg += maxFlow.fordFulkerson(data, 0, 1535);
+            stopwatchAvg[i] += stopwatch.elapsedTime();
+        }
 
-        System.out.println("The maximum possible flow is " + maxFlow.fordFulkerson(data, 0, 1535));
+        float firstRound = stopwatchAvg[0];
+        float secondRound = stopwatchAvg[1] - stopwatchAvg[0];
+        float thirdRound = stopwatchAvg[2] - stopwatchAvg[1];
 
-        System.out.println("Time: "+stopwatch.elapsedTime());
+        System.out.println("The maximum possible flow is " + maxFlowAvg/3);
+        System.out.println("1st iteration time :" + firstRound + " ,2nd iteration time :" + secondRound + " ,3rd iteration time :"+ thirdRound);
+        System.out.println("Average Time: "+stopwatch.elapsedTime()/3);
     }
 }
