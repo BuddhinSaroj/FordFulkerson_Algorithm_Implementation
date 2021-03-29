@@ -133,10 +133,12 @@ class MaxFlow {
         System.out.println("The maximum possible flow is " + maxFlowAvg/3);
         System.out.println("1st iteration time :" + firstRound + "\n2nd iteration time :" + secondRound + "\n3rd iteration time :"+ thirdRound);
         System.out.println("Average Time: "+stopwatch.elapsedTime()/3);
+
+        graph.printGraphs();
     }
 
     private static void readFiles() throws FileNotFoundException {
-        File file = new File("ladder_9.txt");
+        File file = new File("ladder_1.txt");
         System.out.println("Reading.....");
         System.out.println("File : "+file);
         Scanner scanner = new Scanner(file);

@@ -22,4 +22,14 @@ public class Graph {
     public int getCapacity(int startNode,int finishingNode){
         return adjMatrix[startNode][finishingNode];
     }
+
+    public void printGraphs() {
+        System.out.println("\nMatrix...");
+        for (int i = 0; i < numOfNodes; i++) {
+            for (int j = 0; j < numOfNodes; j++) {
+                System.out.print(adjMatrix[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
 }
