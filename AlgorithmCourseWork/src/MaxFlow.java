@@ -1,21 +1,24 @@
 // Java program for implementation of Ford Fulkerson algorithm
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.*;
-import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Scanner;
 
 class MaxFlow {
-    static int V ; // Number of vertices in graph
-    static int data[][];//2d array
+
+    static Graph graph;
 
     /* Returns true if there is a path from source 's' to
     sink 't' in residual graph. Also fills parent[] to
     store the path */
+
     boolean bfs(int rGraph[][], int s, int t, int parent[])
     {
         // Create a visited array and mark all vertices as
         // not visited
-        boolean visited[] = new boolean[V];
-        for (int i = 0; i < V; ++i)
+        boolean visited[] = new boolean[graph.getNumOfNodes()];
+        for (int i = 0; i < graph.getNumOfNodes(); ++i)
             visited[i] = false;
 
         // Create a queue, enqueue source vertex and mark
@@ -29,7 +32,7 @@ class MaxFlow {
         while (queue.size() != 0) {
             int u = queue.poll();
 
-            for (int v = 0; v < V; v++) {
+            for (int v = 0; v < graph.getNumOfNodes(); v++) {
                 if (visited[v] == false
                         && rGraph[u][v] > 0) {
                     // If we find a connection to the sink
@@ -66,14 +69,15 @@ class MaxFlow {
         // residual capacity of edge from i to j (if there
         // is an edge. If rGraph[i][j] is 0, then there is
         // not)
-        int rGraph[][] = new int[V][V];
 
-        for (u = 0; u < V; u++)
-            for (v = 0; v < V; v++)
+        int[][] rGraph = new int[MaxFlow.graph.getNumOfNodes()][MaxFlow.graph.getNumOfNodes()];
+
+        for (u = 0; u < MaxFlow.graph.getNumOfNodes(); u++)
+            for (v = 0; v < MaxFlow.graph.getNumOfNodes(); v++)
                 rGraph[u][v] = graph[u][v];
 
         // This array is filled by BFS and to store path
-        int parent[] = new int[V];
+        int parent[] = new int[MaxFlow.graph.getNumOfNodes()];
 
         int max_flow = 0; // There is no flow initially
 
@@ -110,16 +114,15 @@ class MaxFlow {
     public static void main(String[] args) throws java.lang.Exception
     {
         // Let us create a graph shown in the above example
-
         MaxFlow maxFlow = new MaxFlow();
-        FileReading fileReading = new FileReading();
+
         Stopwatch stopwatch = new Stopwatch();
         int maxFlowAvg = 0;
         float stopwatchAvg[]=new float[3];
-        fileReading.readFiles();
+        readFiles();
 
         for(int i = 0 ; i<3 ; i++){
-            maxFlowAvg += maxFlow.fordFulkerson(data, 0, 1535);
+            maxFlowAvg += maxFlow.fordFulkerson(graph.getAdjMatrix(), 0, graph.getNumOfNodes()-1);
             stopwatchAvg[i] += stopwatch.elapsedTime();
         }
 
@@ -128,7 +131,25 @@ class MaxFlow {
         float thirdRound = stopwatchAvg[2] - stopwatchAvg[1];
 
         System.out.println("The maximum possible flow is " + maxFlowAvg/3);
-        System.out.println("1st iteration time :" + firstRound + " ,2nd iteration time :" + secondRound + " ,3rd iteration time :"+ thirdRound);
+        System.out.println("1st iteration time :" + firstRound + "\n2nd iteration time :" + secondRound + "\n3rd iteration time :"+ thirdRound);
         System.out.println("Average Time: "+stopwatch.elapsedTime()/3);
+    }
+
+    private static void readFiles() throws FileNotFoundException {
+        File file = new File("ladder_9.txt");
+        System.out.println("Reading.....");
+        System.out.println("File : "+file);
+        Scanner scanner = new Scanner(file);
+        String[] capArray = scanner.nextLine().split(" ");
+        int numOfNodes = Integer.parseInt(capArray[0]);
+        graph = new Graph(numOfNodes);
+
+        while (scanner.hasNextLine()){
+            String[] array = scanner.nextLine().split(" ");
+            int startNode = Integer.parseInt(array[0]);
+            int finishingNode = Integer.parseInt(array[1]);
+            int capacity = Integer.parseInt(array[2]);
+            graph.addEdges(startNode,finishingNode,capacity);
+        }
     }
 }
