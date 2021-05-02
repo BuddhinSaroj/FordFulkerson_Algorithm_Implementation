@@ -4,6 +4,11 @@ import java.io.FileNotFoundException;
 import java.lang.*;
 import java.util.LinkedList;
 import java.util.Scanner;
+//Buddhin Samarasinghe
+//2019166
+
+//Algorithm ref : https://www.geeksforgeeks.org/ford-fulkerson-algorithm-for-maximum-flow-problem/
+//              : https://en.wikipedia.org/wiki/Ford%E2%80%93Fulkerson_algorithm
 
 class MaxFlow {
 
@@ -15,14 +20,14 @@ class MaxFlow {
 
     boolean bfs(int rGraph[][], int s, int t, int parent[])
     {
-        // Create a visited array and mark all vertices as
-        // not visited
+        // Create a visited array and mark all vertices/nodes as not visited
         boolean visited[] = new boolean[graph.getNumOfNodes()];
         for (int i = 0; i < graph.getNumOfNodes(); ++i)
             visited[i] = false;
 
         // Create a queue, enqueue source vertex and mark
         // source vertex as visited
+        //ds is queue
         LinkedList<Integer> queue = new LinkedList<Integer>();
         queue.add(s);
         visited[s] = true;
@@ -30,11 +35,13 @@ class MaxFlow {
 
         // Standard BFS Loop
         while (queue.size() != 0) {
+            //return the element at the front
             int u = queue.poll();
-
+            //looping using v value.
             for (int v = 0; v < graph.getNumOfNodes(); v++) {
-                if (visited[v] == false
-                        && rGraph[u][v] > 0) {
+                //checking if there is a connected(if capacity is there,there is a connection)
+                //and if not already visited
+                if (visited[v] == false && rGraph[u][v] > 0) {
                     // If we find a connection to the sink
                     // node, then there is no point in BFS
                     // anymore We just have to set its parent
@@ -70,7 +77,7 @@ class MaxFlow {
         // is an edge. If rGraph[i][j] is 0, then there is
         // not)
 
-        int[][] rGraph = new int[MaxFlow.graph.getNumOfNodes()][MaxFlow.graph.getNumOfNodes()];
+        int[][] rGraph = new int[MaxFlow.graph.getNumOfNodes()] [MaxFlow.graph.getNumOfNodes()];
 
         for (u = 0; u < MaxFlow.graph.getNumOfNodes(); u++)
             for (v = 0; v < MaxFlow.graph.getNumOfNodes(); v++)
@@ -81,17 +88,16 @@ class MaxFlow {
 
         int max_flow = 0; // There is no flow initially
 
-        // Augment the flow while tere is path from source
+        // Augment the flow while there is path from source
         // to sink
         while (bfs(rGraph, s, t, parent)) {
-            // Find minimum residual capacity of the edhes
+            // Find minimum residual capacity of the edges
             // along the path filled by BFS. Or we can say
             // find the maximum flow through the path found.
             int path_flow = Integer.MAX_VALUE;
             for (v = t; v != s; v = parent[v]) {
                 u = parent[v];
-                path_flow
-                        = Math.min(path_flow, rGraph[u][v]);
+                path_flow = Math.min(path_flow, rGraph[u][v]);
             }
 
             // update residual capacities of the edges and
@@ -121,6 +127,7 @@ class MaxFlow {
         float stopwatchAvg[]=new float[3];
         readFiles();
 
+
         for(int i = 0 ; i<3 ; i++){
             maxFlowAvg += maxFlow.fordFulkerson(graph.getAdjMatrix(), 0, graph.getNumOfNodes()-1);
             stopwatchAvg[i] += stopwatch.elapsedTime();
@@ -130,7 +137,10 @@ class MaxFlow {
         float secondRound = stopwatchAvg[1] - stopwatchAvg[0];
         float thirdRound = stopwatchAvg[2] - stopwatchAvg[1];
 
+        System.out.println("--------------------------------------------");
         System.out.println("The maximum possible flow is " + maxFlowAvg/3);
+        System.out.println("--------------------------------------------");
+
         System.out.println("1st iteration time :" + firstRound + "\n2nd iteration time :" + secondRound + "\n3rd iteration time :"+ thirdRound);
         System.out.println("Average Time: "+stopwatch.elapsedTime()/3);
 
@@ -138,20 +148,26 @@ class MaxFlow {
     }
 
     private static void readFiles() throws FileNotFoundException {
-        File file = new File("ladder_1.txt");
-        System.out.println("Reading.....");
-        System.out.println("File : "+file);
-        Scanner scanner = new Scanner(file);
-        String[] capArray = scanner.nextLine().split(" ");
-        int numOfNodes = Integer.parseInt(capArray[0]);
-        graph = new Graph(numOfNodes);
 
-        while (scanner.hasNextLine()){
-            String[] array = scanner.nextLine().split(" ");
-            int startNode = Integer.parseInt(array[0]);
-            int finishingNode = Integer.parseInt(array[1]);
-            int capacity = Integer.parseInt(array[2]);
-            graph.addEdges(startNode,finishingNode,capacity);
+        try {
+            File file = new File("test.txt");
+            System.out.println("Reading.....");
+            System.out.println("File : "+file);
+            Scanner scanner = new Scanner(file);
+            String[] capArray = scanner.nextLine().split(" ");
+            int numOfNodes = Integer.parseInt(capArray[0]);
+            graph = new Graph(numOfNodes);
+
+            while (scanner.hasNextLine()){
+                String[] array = scanner.nextLine().split(" ");
+                int startNode = Integer.parseInt(array[0]);
+                int finishingNode = Integer.parseInt(array[1]);
+                int capacity = Integer.parseInt(array[2]);
+                graph.addEdges(startNode,finishingNode,capacity);
+            }
+        }catch (Exception e){
+            System.out.println("File not found...");
+
         }
     }
 }
